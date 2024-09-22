@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import RecipeCard from './RecipeCard';
 import Pagination from '../helpers/Pagination';
 import catAnimation from '../assets/cat.gif';
-import { fetchRecipes, toggleShowFavorites, setPage } from '../recipeSlice';
+import { toggleShowFavorites, setPage, fetchRecipesRequest } from '../recipeSlice';
 
 const RecipeList = () => {
     const dispatch = useDispatch()
@@ -26,7 +26,7 @@ const RecipeList = () => {
     };
 
     useEffect(() => {
-        dispatch(fetchRecipes());
+        dispatch(fetchRecipesRequest());
     }, [dispatch])
 
     if (loading) {
