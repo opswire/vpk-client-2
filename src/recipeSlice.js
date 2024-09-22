@@ -1,15 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-
-// Асинхронный thunk для загрузки рецептов
-export const fetchRecipes = createAsyncThunk(
-    'recipes/fetchRecipes',
-    async () => {
-      const response = await fetch('https://dummyjson.com/recipes');
-      const data = await response.json();
-      console.log('thunk: ', data)
-      return data.recipes;
-    }
-);  
+import { createSlice } from '@reduxjs/toolkit'
 
 export const recipeSlice = createSlice({
     name: 'recipes',
@@ -22,6 +11,18 @@ export const recipeSlice = createSlice({
         recipesPerPage: 5,
     },
     reducers: {
+        fetchRecipesRequest: (state) => {
+            state.loading = true;
+            state.error = null;
+        },
+        fetchRecipesSuccess: (state, action) => {
+            state.loading = false;
+            state.recipes = action.payload;
+        },
+        fetchRecipesFailure: (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        },
         toggleFavorite: (state, action) => {
             const recipe = state.recipes.find((recipe) => recipe.id === action.payload)
             if (recipe) {
@@ -43,24 +44,19 @@ export const recipeSlice = createSlice({
         setPage: (state, action) => {
             state.currentPage = action.payload;
         }
-    },
-    extraReducers: (builder) => {
-        builder
-          .addCase(fetchRecipes.pending, (state) => {
-            state.loading = true;
-          })
-          .addCase(fetchRecipes.fulfilled, (state, action) => {
-            state.loading = false;
-            console.log('fulfilled action.payload: ', action.payload);
-            state.recipes = action.payload;
-          })
-          .addCase(fetchRecipes.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message;
-          });
-    },
+    }
 })
 
-export const { toggleFavorite, deleteRecipe, toggleShowFavorites, toggleShowIngredients, setPage }  = recipeSlice.actions
+export const {
+    fetchRecipesRequest,
+    fetchRecipesSuccess,
+    fetchRecipesFailure,
+    toggleFavorite,
+    deleteRecipe,
+    toggleShowFavorites,
+    toggleShowIngredients,
+    setPage,
+    toggleIngredients,
+} = recipeSlice.actions;
 
 export default recipeSlice.reducer
