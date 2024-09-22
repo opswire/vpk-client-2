@@ -1,27 +1,29 @@
-import { useDispatch } from 'react-redux'
-import { toggleFavorite, toggleShowIngredients, deleteRecipe } from '../recipeSlice';
+import React from 'react';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../StoreContext';
 
-const RecipeCard = ({ recipe }) => {
-    const dispatch = useDispatch()
+const RecipeCard = observer(({ recipe }) => {
+    const { recipeStore } = useStore();
+    const showIngredients = recipeStore.ingredientVisibility[recipe.id];
 
     const handleToggleShowIngredients = () => {
-        dispatch(toggleShowIngredients(recipe.id))
-    }
+        recipeStore.toggleIngredients(recipe.id);
+    };
 
     const handleToggleFavorite = (e) => {
-        e.stopPropagation()
-        dispatch(toggleFavorite(recipe.id))
-    }
+        e.stopPropagation();
+        recipeStore.toggleFavorite(recipe.id);
+    };
 
     const handleDeleteRecipe = (e) => {
-        e.stopPropagation()
-        dispatch(deleteRecipe(recipe.id))
-    }
+        e.stopPropagation();
+        recipeStore.deleteRecipe(recipe.id);
+    };
 
     return (
         <div className={`recipe-card-container ${recipe.isFavorite ? 'favorite' : ''}`} onClick={handleToggleShowIngredients}>
             <img src={recipe.image} className='recipe-img' alt={recipe.name} />
-            {recipe.showIngredients && (
+            {showIngredients && (
                 <h2 className='recipe-p'>{recipe.name}</h2>
             )}
             <div className="recipe-gradient"></div>
@@ -33,7 +35,7 @@ const RecipeCard = ({ recipe }) => {
                 <button className="delete-btn" onClick={handleDeleteRecipe}>Удалить рецепт</button>
             </div>
 
-            {recipe.showIngredients && (
+            {showIngredients && (
                 <div className="ingredients-list">
                     <h3>Ингредиенты:</h3>
                     <ul>
@@ -45,6 +47,6 @@ const RecipeCard = ({ recipe }) => {
             )}
         </div>
     );
-}
+});
 
 export default RecipeCard;
