@@ -1,30 +1,39 @@
-import { useState } from 'react';
-import './RecipeCard.css';
+import { useDispatch } from 'react-redux'
+import { toggleFavorite, toggleShowIngredients, deleteRecipe } from '../recipeSlice';
 
-const RecipeCard = ({recipe, onDelete, onFavorite}) => {
-    const [showIngredients, setShowIngredients] = useState(false);
+const RecipeCard = ({ recipe }) => {
+    const dispatch = useDispatch()
 
-    const toggleIngredients = (e) => {
-        if (e.target.classList.contains('favorite-btn')) return;
-        setShowIngredients(!showIngredients);
-    };
+    const handleToggleShowIngredients = () => {
+        dispatch(toggleShowIngredients(recipe.id))
+    }
+
+    const handleToggleFavorite = (e) => {
+        e.stopPropagation()
+        dispatch(toggleFavorite(recipe.id))
+    }
+
+    const handleDeleteRecipe = (e) => {
+        e.stopPropagation()
+        dispatch(deleteRecipe(recipe.id))
+    }
 
     return (
-        <div className={`recipe-card-container ${recipe.isFavorite ? 'favorite' : ''}`} onClick={toggleIngredients}>
+        <div className={`recipe-card-container ${recipe.isFavorite ? 'favorite' : ''}`} onClick={handleToggleShowIngredients}>
             <img src={recipe.image} className='recipe-img' alt={recipe.name} />
-            {showIngredients && (
+            {recipe.showIngredients && (
                 <h2 className='recipe-p'>{recipe.name}</h2>
             )}
             <div className="recipe-gradient"></div>
 
             <div className="recipe-actions">
-                <button className="favorite-btn" onClick={(e) => { e.stopPropagation(); onFavorite(recipe.id); }}>
+                <button className="favorite-btn" onClick={handleToggleFavorite}>
                     {recipe.isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
                 </button>
-                <button className="delete-btn" onClick={(e) => { e.stopPropagation(); onDelete(recipe.id); }}>Удалить рецепт</button>
+                <button className="delete-btn" onClick={handleDeleteRecipe}>Удалить рецепт</button>
             </div>
 
-            {showIngredients && (
+            {recipe.showIngredients && (
                 <div className="ingredients-list">
                     <h3>Ингредиенты:</h3>
                     <ul>

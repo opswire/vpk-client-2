@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Pagination = ({ totalRecipes, recipesPerPage, paginate }) => {
+const Pagination = ({ totalRecipes, recipesPerPage, paginate, currentPage }) => {
     const pageNumbers = [];
 
     for (let i = 1; i <= Math.ceil(totalRecipes / recipesPerPage); i++) {
@@ -11,7 +11,7 @@ const Pagination = ({ totalRecipes, recipesPerPage, paginate }) => {
         <nav>
             <ul className='pagination'>
                 {pageNumbers.map(number => (
-                    <li key={number} className='page-item'>
+                    <li key={number} className={`page-item ${number === currentPage ? 'active' : ''}`}>
                         <button onClick={() => paginate(number)} className='page-link'>
                             {number}
                         </button>
